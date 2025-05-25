@@ -53,3 +53,35 @@ function createEmployee(salary: number | string): Director | Teacher {
 console.log(createEmployee(200) instanceof Teacher);  // true
 console.log(createEmployee(1000) instanceof Director); // true
 console.log(createEmployee('$500') instanceof Director); // true
+
+
+// Reuse interfaces if already declared
+interface DirectorInterface {
+  workFromHome(): string;
+  getCoffeeBreak(): string;
+  workDirectorTasks(): string;
+}
+
+interface TeacherInterface {
+  workFromHome(): string;
+  getCoffeeBreak(): string;
+  workTeacherTasks(): string;
+}
+
+// Type predicate to check if employee is a Director
+function isDirector(employee: DirectorInterface | TeacherInterface): employee is DirectorInterface {
+  return (employee as DirectorInterface).workDirectorTasks !== undefined;
+}
+
+// Function to execute the appropriate work method
+function executeWork(employee: DirectorInterface | TeacherInterface): string {
+  if (isDirector(employee)) {
+    return employee.workDirectorTasks();
+  }
+  return employee.workTeacherTasks();
+}
+
+// ✅ Test Cases
+console.log(executeWork(createEmployee(200)));   // Output: Getting to work
+console.log(executeWork(createEmployee(1000)));  // Output: Getting to director tasks
+
